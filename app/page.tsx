@@ -1,69 +1,178 @@
-import Image from "next/image";
+import { desc, sql } from "drizzle-orm";
+import { db } from "@/db";
+import { episodes } from "@/db/schema";
+import { createEpisode } from "./actions";
+import { isYouTubeUrl } from "@/lib/youtube";
 
-export default function Home() {
+export const instant = false;
+
+export default async function Home() {
+  const allEpisodes = await db
+    .select()
+    .from(episodes)
+    .orderBy(sql`${episodes.published_on} desc nulls last`, desc(episodes.id));
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="page-shell">
+      <header className="page-header">
+        <div className="brand-mark" aria-hidden="true">
+          E
+        </div>
+        <p className="eyebrow">YOUR WATCHLIST, IN ONE PLACE</p>
+        <h1>Episode tracker</h1>
+        <p className="intro">
+          Keep track of the conversations you want to watch, all in one simple
+          list.
+        </p>
+      </header>
+
+      <section className="content-grid" aria-label="Episode tracker">
+        <section className="panel form-panel" aria-labelledby="add-heading">
+          <div className="section-heading">
+            <span className="step-number" aria-hidden="true">
+              01
+            </span>
+            <div>
+              <p className="eyebrow">ADD TO YOUR LIST</p>
+              <h2 id="add-heading">New episode</h2>
+            </div>
+          </div>
+
+          <form action={createEpisode} className="episode-form">
+            <label>
+              <span>Episode title</span>
+              <input
+                autoComplete="off"
+                maxLength={300}
+                name="title"
+                placeholder="e.g. How to build better habits"
+                required
+              />
+            </label>
+
+            <label>
+              <span>Guest <span className="optional">(optional)</span></span>
+              <input
+                autoComplete="name"
+                maxLength={200}
+                name="guest"
+                placeholder="Who is being interviewed?"
+              />
+            </label>
+
+            <label>
+              <span>
+                YouTube URL <span className="optional">(optional)</span>
+              </span>
+              <input
+                autoComplete="url"
+                name="youtube_url"
+                placeholder="https://www.youtube.com/watch?v=..."
+                type="url"
+              />
+            </label>
+
+            <label>
+              <span>
+                Publish date <span className="optional">(optional)</span>
+              </span>
+              <input name="published_on" type="date" />
+            </label>
+
+            <button className="submit-button" type="submit">
+              <span aria-hidden="true">+</span> Add episode
+            </button>
+          </form>
+          <p className="form-note">
+            Your episode is saved to the database and added to this list.
           </p>
+        </section>
+
+        <EpisodeList allEpisodes={allEpisodes} />
+      </section>
+
+      <footer className="page-footer">
+        A small, personal library for the episodes worth coming back to.
+      </footer>
+    </main>
+  );
+}
+
+function EpisodeList({
+  allEpisodes,
+}: {
+  allEpisodes: (typeof episodes.$inferSelect)[];
+}) {
+  return (
+    <section className="panel list-panel" aria-labelledby="list-heading">
+      <div className="list-heading">
+        <div className="section-heading">
+          <span className="step-number" aria-hidden="true">
+            02
+          </span>
+          <div>
+            <p className="eyebrow">SAVED IN YOUR DATABASE</p>
+            <h2 id="list-heading">Your episodes</h2>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <span className="episode-count">
+          {allEpisodes.length}{" "}
+          {allEpisodes.length === 1 ? "episode" : "episodes"}
+        </span>
+      </div>
+
+      {allEpisodes.length === 0 ? (
+        <div className="empty-state">
+          <span className="empty-icon" aria-hidden="true">
+            ↗
+          </span>
+          <h3>Your list is ready</h3>
+          <p>Add an episode using the form and it will show up here.</p>
         </div>
-      </main>
-    </div>
+      ) : (
+        <ol className="episode-list">
+          {allEpisodes.map((episode) => (
+            <li className="episode-card" key={episode.id}>
+              <div className="episode-card-top">
+                <span className="episode-number">
+                  EP. {String(episode.id).padStart(2, "0")}
+                </span>
+                {episode.published_on && (
+                  <time dateTime={episode.published_on}>
+                    {new Date(
+                      `${episode.published_on}T00:00:00Z`,
+                    ).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                      timeZone: "UTC",
+                    })}
+                  </time>
+                )}
+              </div>
+              <h3>{episode.title}</h3>
+              <p className="episode-guest">
+                {episode.guest || "Guest not listed"}
+              </p>
+              {episode.youtube_url && (
+                <p className="episode-link">
+                  {isYouTubeUrl(episode.youtube_url) ? (
+                    <a
+                      href={episode.youtube_url}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      Watch on YouTube <span aria-hidden="true">↗</span>
+                    </a>
+                  ) : (
+                    <span>{episode.youtube_url}</span>
+                  )}
+                </p>
+              )}
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
   );
 }

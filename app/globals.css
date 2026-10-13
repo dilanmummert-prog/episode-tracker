@@ -1,26 +1,363 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --ink: #202622;
+  --muted: #747b76;
+  --green: #3b725d;
+  --green-dark: #2f5d4b;
+  --paper: #f4f5f0;
+  --line: #e8ebe5;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.page-shell {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 64px 0 28px;
+}
+
+.page-header {
+  position: relative;
+  margin: 0 auto 44px;
+  max-width: 640px;
+  text-align: center;
+}
+
+.brand-mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 20px;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--green);
+  color: white;
+  font-family: Georgia, serif;
+  font-size: 24px;
+  font-style: italic;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(38px, 6vw, 54px);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+}
+
+.intro {
+  max-width: 420px;
+  margin: 12px auto 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(290px, 0.82fr) minmax(0, 1.18fr);
+  align-items: start;
+  gap: 20px;
+}
+
+.panel {
+  border: 1px solid #eaede7;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 8px 30px rgb(31 43 35 / 4%);
+}
+
+.form-panel,
+.list-panel {
+  padding: 26px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.step-number {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  place-items: center;
+  border: 1px solid #dce7df;
+  border-radius: 12px;
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.section-heading .eyebrow {
+  margin-bottom: 4px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 23px;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+
+.episode-form {
+  display: grid;
+  gap: 17px;
+  margin-top: 26px;
+}
+
+.episode-form label {
+  display: grid;
+  gap: 7px;
+  color: #39423c;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.optional {
+  color: #929993;
+  font-weight: 400;
+}
+
+.episode-form input {
+  width: 100%;
+  min-height: 43px;
+  padding: 0 12px;
+  border: 1px solid #e2e6e0;
+  border-radius: 9px;
+  outline: none;
+  background: #fcfdfb;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 400;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.episode-form input::placeholder {
+  color: #a4aaa5;
+}
+
+.episode-form input:focus {
+  border-color: #78a28c;
+  box-shadow: 0 0 0 3px rgb(59 114 93 / 10%);
+}
+
+.submit-button {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 2px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--green);
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 150ms ease, transform 150ms ease;
+}
+
+.submit-button:hover {
+  transform: translateY(-1px);
+  background: var(--green-dark);
+}
+
+.submit-button span {
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.form-note {
+  margin: 14px 0 0;
+  color: #8a918b;
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.episode-count {
+  padding: 7px 10px;
+  border-radius: 20px;
+  background: #f0f5f1;
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.empty-state {
+  display: flex;
+  min-height: 270px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.empty-icon {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 14px;
+  background: #f1f6f2;
+  color: var(--green);
+  font-size: 20px;
+}
+
+.empty-state h3 {
+  margin: 16px 0 5px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.empty-state p {
+  max-width: 230px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.episode-list {
+  display: grid;
+  gap: 11px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.episode-card {
+  padding: 17px 18px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.episode-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #89918b;
+  font-size: 10px;
+}
+
+.episode-number {
+  color: var(--green);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.episode-card h3 {
+  margin: 11px 0 5px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.episode-guest {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.episode-link {
+  margin: 13px 0 0;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.episode-link a {
+  color: var(--green);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.episode-link a:hover {
+  text-decoration: underline;
+}
+
+.page-footer {
+  padding-top: 30px;
+  color: #8c938d;
+  font-size: 11px;
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .page-shell {
+    width: min(560px, calc(100% - 32px));
+    padding-top: 42px;
+  }
+
+  .page-header {
+    margin-bottom: 30px;
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .form-panel,
+  .list-panel {
+    padding: 21px 18px;
+  }
+
+  .list-heading {
+    align-items: flex-start;
+  }
+
+  .episode-count {
+    margin-top: 4px;
+  }
 }
